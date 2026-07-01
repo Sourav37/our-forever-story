@@ -37,16 +37,9 @@ export function GallerySection() {
 
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const slides = media.map((m) =>
-    m.type === "image"
-      ? { src: m.src }
-      : {
-          type: "video" as const,
-          sources: [{ src: m.src, type: m.src.endsWith(".webm") ? "video/webm" : "video/mp4" }],
-          width: 1280,
-          height: 720,
-        },
-  );
+  const slides = media.map((m) => ({ src: m.src, _kind: m.type })) as unknown as {
+    src: string;
+  }[];
 
   const hasMedia = media.length > 0;
 
@@ -122,21 +115,21 @@ export function GallerySection() {
         slides={slides}
         render={{
           slide: ({ slide }) => {
-            if ((slide as { type?: string }).type === "video") {
-              const s = slide as { sources: { src: string; type: string }[] };
+            const s = slide as { src: string; _kind?: "image" | "video" };
+            if (s._kind === "video") {
               return (
                 <video
                   controls
                   autoPlay
                   playsInline
                   className="max-h-[85vh] max-w-[95vw] rounded-lg"
-                  src={s.sources[0].src}
+                  src={s.src}
                 />
               );
             }
             return (
               <img
-                src={(slide as { src: string }).src}
+                src={s.src}
                 alt=""
                 className="max-h-[85vh] max-w-[95vw] rounded-lg object-contain"
               />
