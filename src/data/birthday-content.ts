@@ -43,5 +43,8 @@ export const finaleContent = {
   signature: "Forever Yours, Sourav",
 };
 
-// Optional: background music file (drop into public/ and reference here)
-export const backgroundMusicSrc: string | null = null; // e.g. "/music/our-song.mp3"
+// Background music. Drop your own MP3 into `public/music/` and update this
+// path (e.g. "/music/our-song.mp3"). A soft, slow romantic piano placeholder
+// is used by default so the page has music out of the box.
+export const backgroundMusicSrc: string | null =
+  "https://cdn.pixabay.com/download/audio/2022/10/18/audio_31d914a577.mp3?filename=romantic-piano-116213.mp3";

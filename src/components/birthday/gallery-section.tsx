@@ -49,15 +49,26 @@ export function GallerySection() {
 
       {hasMedia ? (
         <div className="mx-auto mt-10 max-w-6xl columns-2 gap-3 sm:columns-3 sm:gap-4 lg:columns-4">
-          {media.map((item, i) => (
+          {media.map((item, i) => {
+            // Alternate entrance directions for a lively mobile scroll feel.
+            const variants = [
+              { x: -40, y: 30, rotate: -4 },
+              { x: 40, y: 30, rotate: 4 },
+              { x: 0, y: 60, rotate: 0 },
+              { x: -20, y: 40, rotate: 2 },
+            ];
+            const v = variants[i % variants.length];
+            return (
             <motion.button
               key={item.key}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.6, delay: (i % 8) * 0.05 }}
+              initial={{ opacity: 0, x: v.x, y: v.y, rotate: v.rotate, scale: 0.85, filter: "blur(8px)" }}
+              whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0, scale: 1, filter: "blur(0px)" }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.8, delay: (i % 6) * 0.08, ease: [0.16, 1, 0.3, 1] }}
+              whileHover={{ scale: 1.04, rotate: v.rotate / 2 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => setOpenIndex(i)}
-              className="glass mb-3 block w-full overflow-hidden rounded-2xl p-1 transition hover:scale-[1.02] sm:mb-4"
+              className="glass mb-3 block w-full overflow-hidden rounded-2xl p-1 sm:mb-4"
             >
               {item.type === "image" ? (
                 <img
@@ -85,7 +96,8 @@ export function GallerySection() {
                 </div>
               )}
             </motion.button>
-          ))}
+          );
+          })}
         </div>
       ) : (
         <div className="mx-auto mt-10 max-w-6xl columns-2 gap-3 sm:columns-3 sm:gap-4 lg:columns-4">
