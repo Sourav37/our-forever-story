@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useRef } from "react";
 import { FloatingHearts } from "@/components/birthday/floating-hearts";
 import { MusicToggle } from "@/components/birthday/music-toggle";
+import { StickyHeader } from "@/components/birthday/sticky-header";
 import { WelcomeSection } from "@/components/birthday/welcome-section";
 import { GallerySection } from "@/components/birthday/gallery-section";
 import { TimelineSection } from "@/components/birthday/timeline-section";
@@ -24,6 +25,7 @@ function Index() {
   return (
     <main className="relative overflow-hidden">
       <FloatingHearts />
+      <StickyHeader />
       <MusicToggle src={backgroundMusicSrc} />
 
       <div className="relative z-10">
