@@ -77,14 +77,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Happy Birthday, My Love ❤️" },
+      { name: "description", content: "A little digital scrapbook of our memories — for the most precious person in my life. Happy Birthday, Puja." },
+      { name: "author", content: "Sourav" },
+      { property: "og:title", content: "Happy Birthday, My Love ❤️" },
+      { property: "og:description", content: "A little digital scrapbook of our memories, made with love." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
