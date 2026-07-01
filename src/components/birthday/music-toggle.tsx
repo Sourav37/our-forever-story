@@ -35,12 +35,16 @@ export function MusicToggle({ src }: { src: string | null }) {
 
   return (
     <motion.button
-      initial={{ opacity: 0, y: -8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 1.2, duration: 0.6 }}
+      initial={{ opacity: 0, scale: 0.6 }}
+      animate={{ opacity: 1, scale: 1, rotate: 360 }}
+      transition={{
+        opacity: { delay: 1.2, duration: 0.6 },
+        scale: { delay: 1.2, duration: 0.6 },
+        rotate: { repeat: Infinity, ease: "linear", duration: 12 },
+      }}
       onClick={toggle}
       aria-label={playing ? "Pause music" : "Play music"}
-      className="glass fixed right-4 top-4 z-50 grid h-11 w-11 place-items-center rounded-full text-plum transition hover:scale-105"
+      className="glass fixed right-3 top-3 z-50 grid h-11 w-11 place-items-center rounded-full text-rose shadow-lg shadow-rose/20 transition hover:scale-110 sm:right-4 sm:top-4"
     >
       {src ? (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
