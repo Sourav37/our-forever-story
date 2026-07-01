@@ -1,24 +1,40 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useRef } from "react";
+import { FloatingHearts } from "@/components/birthday/floating-hearts";
+import { MusicToggle } from "@/components/birthday/music-toggle";
+import { WelcomeSection } from "@/components/birthday/welcome-section";
+import { GallerySection } from "@/components/birthday/gallery-section";
+import { TimelineSection } from "@/components/birthday/timeline-section";
+import { LetterSection } from "@/components/birthday/letter-section";
+import { ReasonsSection } from "@/components/birthday/reasons-section";
+import { FinaleSection } from "@/components/birthday/finale-section";
+import { backgroundMusicSrc } from "@/data/birthday-content";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
+  const journeyRef = useRef<HTMLDivElement>(null);
+
+  const scrollToJourney = () => {
+    journeyRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="relative overflow-hidden">
+      <FloatingHearts />
+      <MusicToggle src={backgroundMusicSrc} />
+
+      <div className="relative z-10">
+        <WelcomeSection onStart={scrollToJourney} />
+        <div ref={journeyRef} />
+        <GallerySection />
+        <TimelineSection />
+        <LetterSection />
+        <ReasonsSection />
+        <FinaleSection />
+      </div>
+    </main>
   );
 }
