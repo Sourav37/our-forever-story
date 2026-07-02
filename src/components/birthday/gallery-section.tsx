@@ -5,17 +5,18 @@ import "yet-another-react-lightbox/styles.css";
 
 // Auto-discovery: drop .jpg/.png/.webp/.mp4 files into src/assets/gallery/
 // and they'll appear here automatically.
-const imageModules = import.meta.glob("/src/assets/gallery/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP}", {
-  eager: true,
-  query: "?url",
-  import: "default",
-}) as Record<string, string>;
+// CDN-backed assets: photos/videos live as .asset.json pointer files.
+type AssetPointer = { url: string; content_type?: string; original_filename?: string };
 
-const videoModules = import.meta.glob("/src/assets/gallery/*.{mp4,webm,mov,MP4,WEBM,MOV}", {
-  eager: true,
-  query: "?url",
-  import: "default",
-}) as Record<string, string>;
+const imageModules = import.meta.glob(
+  "/src/assets/gallery/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP}.asset.json",
+  { eager: true, import: "default" },
+) as Record<string, AssetPointer>;
+
+const videoModules = import.meta.glob(
+  "/src/assets/gallery/*.{mp4,webm,mov,MP4,WEBM,MOV}.asset.json",
+  { eager: true, import: "default" },
+) as Record<string, AssetPointer>;
 
 type MediaItem =
   | { type: "image"; src: string; key: string }
@@ -28,10 +29,10 @@ export function GallerySection() {
   const media: MediaItem[] = useMemo(() => {
     const images: MediaItem[] = Object.entries(imageModules)
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([key, src]) => ({ type: "image", src, key }));
+      .map(([key, ptr]) => ({ type: "image", src: ptr.url, key }));
     const videos: MediaItem[] = Object.entries(videoModules)
       .sort(([a], [b]) => a.localeCompare(b))
-      .map(([key, src]) => ({ type: "video", src, key }));
+      .map(([key, ptr]) => ({ type: "video", src: ptr.url, key }));
     return [...images, ...videos];
   }, []);
 
