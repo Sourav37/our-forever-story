@@ -273,7 +273,7 @@ export function GallerySection({ onLoadingComplete }: { onLoadingComplete?: () =
               className="h-full rounded-full bg-gradient-to-r from-rose via-lavender to-plum"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: 0.8, ease: "easeInOut" }}
             />
           </div>
         </div>

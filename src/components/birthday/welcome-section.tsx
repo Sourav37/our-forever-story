@@ -13,7 +13,7 @@ export function WelcomeSection({ onStart }: { onStart: () => void }) {
   }, []);
 
   return (
-    <section className="relative flex min-h-screen flex-col items-center justify-start px-4 py-16 text-center sm:px-6">
+    <section className="relative flex min-h-screen flex-col items-center justify-start px-4 py-14 text-center sm:px-6">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
@@ -70,7 +70,7 @@ export function WelcomeSection({ onStart }: { onStart: () => void }) {
         transition={{ delay: 1.4, duration: 1 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 text-plum/50"
       >
-        <span className="font-serif-romantic text-base font-semibold">scroll ↓</span>
+        <span className="font-serif-romantic text-xl font-semibold">scroll ↓</span>
       </motion.div>
     </section>
   );

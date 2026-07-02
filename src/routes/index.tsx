@@ -1,5 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+
+
 import { FloatingHearts } from "@/components/birthday/floating-hearts";
 import { MusicToggle } from "@/components/birthday/music-toggle";
 import { StickyHeader } from "@/components/birthday/sticky-header";
@@ -19,6 +21,7 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const [loaderState, setLoaderState] = useState<"loading" | "ready">("loading");
+
   const journeyRef = useRef<HTMLDivElement>(null);
   const scrollToJourney = () => {
     journeyRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -38,17 +41,22 @@ function Index() {
   }, [loaderState]);
 
   return (
-    <main className="relative overflow-hidden min-h-screen bg-gradient-to-b from-lavender/25 via-white to-lavender/15">
-      <FloatingHearts />
-      <StickyHeader />
-      <MusicToggle src={backgroundMusicSrc} />
-      <WelcomeSection onStart={scrollToJourney} />
-      <div ref={journeyRef} />
-      <GallerySection onLoadingComplete={() => setLoaderState("ready")} />
-      <TimelineSection />
-      <LetterSection />
-      <ReasonsSection />
-      <FinaleSection />
-    </main>
+    <>
+
+
+      {/* Main site content, visible when ready */}
+      <main className="relative overflow-hidden min-h-screen bg-gradient-to-b from-lavender/25 via-white to-lavender/15">
+        <FloatingHearts />
+        <StickyHeader />
+        <MusicToggle src={backgroundMusicSrc} startPlayback={true} />
+        <WelcomeSection onStart={scrollToJourney} />
+        <div ref={journeyRef} />
+        <GallerySection onLoadingComplete={() => setLoaderState("ready")} />
+        <TimelineSection />
+        <LetterSection />
+        <ReasonsSection />
+        <FinaleSection />
+      </main>
+    </>
   );
 }

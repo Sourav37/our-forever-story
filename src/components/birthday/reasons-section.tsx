@@ -17,7 +17,7 @@ export function ReasonsSection() {
           grabCursor
           modules={[EffectCards, Pagination, Autoplay]}
           pagination={{ clickable: true }}
-          autoplay={{ delay: 3500, disableOnInteraction: false }}
+          autoplay={{ delay: 5000, disableOnInteraction: false }}
           loop
           className="reasons-swiper"
         >
@@ -33,7 +33,7 @@ export function ReasonsSection() {
             </SwiperSlide>
           ))}
         </Swiper>
-        <p className="mt-6 text-center font-serif-romantic text-sm text-plum/60">
+        <p className="mt-6 text-center font-serif-romantic text-xl text-plum/60">
           swipe →
         </p>
       </div>
