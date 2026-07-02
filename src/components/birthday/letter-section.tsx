@@ -20,7 +20,7 @@ export function LetterSection() {
   }, [inView]);
 
   return (
-    <section className="relative px-4 py-20 sm:px-6">
+    <section className="relative px-4 py-10 sm:px-6">
       <SectionHeading eyebrow="A letter, from me to you" title="Words from my heart" />
 
       <motion.div
@@ -31,7 +31,7 @@ export function LetterSection() {
         transition={{ duration: 0.8 }}
         className="glass-strong mx-auto mt-10 max-w-xl rounded-3xl p-7 sm:p-10"
       >
-        <pre className="whitespace-pre-wrap font-serif-romantic text-base leading-relaxed text-plum sm:text-lg">
+        <pre className="whitespace-pre-wrap font-serif-romantic text-base leading-relaxed text-plum sm:text-lg font-semibold">
           {typed}
           {typed.length < loveLetter.length && (
             <span

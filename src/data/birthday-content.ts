@@ -4,7 +4,7 @@
 
 export const welcomeContent = {
   greeting: "Happy Birthday",
-  names: ["Puja", "Sonai", "Khepi", "My Love", "Bou"],
+  names: ["Puja🤗", "Sonai💕", "Khepi😘", "My Love💖", "Bou😍"],
   message:
     "Hey, my love ❤️  Happy Birthday to the most precious person in my life — I love you more than words can ever express, today and always.",
   ctaLabel: "Start Our Journey",
@@ -17,13 +17,13 @@ export const timelineMoments = [
   { title: "Our Engagement", date: "A promise for forever", description: "The easiest 'yes' of my life was saying I'd love you always." },
 ];
 
-export const loveLetter = `My dearest Puja,
+export const loveLetter = `My dearest Puja❤️,
 
 If I had a thousand lifetimes, I would choose you in every single one. You are my favourite thought in the morning, my softest smile at night, and my quiet 'thank you' to the universe.
 
 Thank you for being my calm, my chaos, my whole heart.
 
-Happy Birthday, my Sonai. Here's to us — always.
+Happy Birthday, my Sonai. Here's to us - always.
 
 Forever yours,
 Sourav ❤️`;
@@ -40,11 +40,9 @@ export const reasonsToLove = [
 
 export const finaleContent = {
   title: "Happy Birthday, My Love ❤️",
-  signature: "Forever Yours, Sourav",
+  signature: "Forever Yours, Sourav🫰",
 };
 
-// Background music. Drop your own MP3 into `public/music/` and update this
-// path (e.g. "/music/our-song.mp3"). A soft, slow romantic piano placeholder
-// is used by default so the page has music out of the box.
-export const backgroundMusicSrc: string | null =
-  "https://cdn.pixabay.com/download/audio/2022/10/18/audio_31d914a577.mp3?filename=romantic-piano-116213.mp3";
+// Background music. The file lives in `public/music/romantic-piano.mp3` so it is
+// served directly by Vite and works offline too. Swap in any .mp3 you like.
+export const backgroundMusicSrc: string | null = "/music/romantic-piano.mp3";

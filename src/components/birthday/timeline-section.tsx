@@ -4,7 +4,7 @@ import { SectionHeading } from "./gallery-section";
 
 export function TimelineSection() {
   return (
-    <section className="relative px-4 py-20 sm:px-6">
+    <section className="relative px-4 py-10 sm:px-6">
       <SectionHeading eyebrow="Our story, so far" title="Little moments, big forever" />
 
       <div className="relative mx-auto mt-14 max-w-2xl">
@@ -20,9 +20,8 @@ export function TimelineSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.7, delay: 0.05 * i }}
-              className={`relative pl-10 sm:w-1/2 sm:pl-0 ${
-                i % 2 === 0 ? "sm:pr-10 sm:text-right" : "sm:ml-auto sm:pl-10"
-              }`}
+              className={`relative pl-10 sm:w-1/2 sm:pl-0 ${i % 2 === 0 ? "sm:pr-10 sm:text-right" : "sm:ml-auto sm:pl-10"
+                }`}
             >
               <span
                 aria-hidden

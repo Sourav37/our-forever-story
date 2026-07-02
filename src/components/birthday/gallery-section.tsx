@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shuffle, Pause, ArrowDownWideNarrow, ArrowUpWideNarrow } from "lucide-react";
 import Lightbox from "yet-another-react-lightbox";
@@ -43,18 +43,26 @@ function seededShuffle<T>(items: T[], seed: number): T[] {
   return arr;
 }
 
-export function GallerySection() {
+export function GallerySection({ onLoadingComplete }: { onLoadingComplete?: () => void }) {
   const allMedia: MediaItem[] = useMemo(() => {
     const toItem = (
       type: "image" | "video",
       key: string,
       ptr: AssetPointer,
-    ): MediaItem => ({
-      type,
-      key,
-      src: ptr.url,
-      createdAt: ptr.created_at ? Date.parse(ptr.created_at) : 0,
-    });
+    ): MediaItem => {
+      let resolvedSrc = ptr.url;
+      if (resolvedSrc.startsWith("/__l5e")) {
+        resolvedSrc = `https://birthday-formylove.lovable.app${resolvedSrc}`;
+      } else if (!resolvedSrc.startsWith("http") && !resolvedSrc.startsWith("/")) {
+        resolvedSrc = `https://birthday-formylove.lovable.app/${resolvedSrc}`;
+      }
+      return {
+        type,
+        key,
+        src: resolvedSrc,
+        createdAt: ptr.created_at ? Date.parse(ptr.created_at) : 0,
+      };
+    };
     const images = Object.entries(imageModules).map(([k, p]) => toItem("image", k, p));
     const videos = Object.entries(videoModules).map(([k, p]) => toItem("video", k, p));
     return [...images, ...videos];
@@ -62,9 +70,11 @@ export function GallerySection() {
 
   const [sortOrder, setSortOrder] = useState<"newest" | "oldest">("newest");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const [shuffleOn, setShuffleOn] = useState(false);
+  const [shuffleOn, setShuffleOn] = useState(true);
   const [shuffleSeed, setShuffleSeed] = useState(1);
   const [loadedCount, setLoadedCount] = useState(0);
+  const [skipped, setSkipped] = useState(false);
+  const [showSkip, setShowSkip] = useState(false);
 
   const sortedMedia = useMemo(() => {
     const sorted = allMedia.slice().sort((a, b) => {
@@ -94,6 +104,49 @@ export function GallerySection() {
   const totalImages = allMedia.filter((m) => m.type === "image").length;
   const progress = totalImages === 0 ? 100 : Math.min(100, Math.round((loadedCount / totalImages) * 100));
   const isLoading = totalImages > 0 && loadedCount < totalImages;
+  const [minTimeElapsed, setMinTimeElapsed] = useState(false);
+
+  // Guarantee minimum loader screen time for a polished UX/intro feel
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMinTimeElapsed(true);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const showLoader = (isLoading || !minTimeElapsed) && !skipped;
+
+  // Lock scroll when loader is active
+  useEffect(() => {
+    if (showLoader) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showLoader]);
+
+  // Show Skip button after 5 seconds of loading
+  useEffect(() => {
+    if (!isLoading) {
+      setShowSkip(false);
+      return;
+    }
+    const timer = setTimeout(() => {
+      setShowSkip(true);
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [isLoading]);
+
+  // Notify parent component when loading is complete
+  useEffect(() => {
+    if (!showLoader && onLoadingComplete) {
+      onLoadingComplete();
+    }
+  }, [showLoader, onLoadingComplete]);
+
 
   const slides = media.map((m) => ({ src: m.src, _kind: m.type })) as unknown as {
     src: string;
@@ -102,33 +155,99 @@ export function GallerySection() {
   const hasMedia = media.length > 0;
 
   return (
-    <section id="gallery" className="relative px-4 py-20 sm:px-6">
+    <section id="gallery" className="relative px-4 py-10 sm:px-6">
+      <AnimatePresence>
+        {showLoader && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
+            className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-plum/95 via-rose/95 to-plum/95 backdrop-blur-md"
+          >
+            <div className="relative flex flex-col items-center justify-center px-6 text-center">
+              {/* Pulsing Love Symbol (Heart) */}
+              <motion.div
+                animate={{
+                  scale: [1, 1.2, 1],
+                }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 1.2,
+                  ease: "easeInOut",
+                }}
+                className="relative z-10 text-8xl md:text-9xl drop-shadow-[0_0_20px_rgba(255,255,255,0.4)] cursor-default select-none animate-pulse"
+              >
+                ❤️
+              </motion.div>
+
+              {/* Glowing ring under the heart */}
+              <motion.div
+                animate={{
+                  scale: [1, 1.8],
+                  opacity: [0.6, 0],
+                }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 1.2,
+                  ease: "easeOut",
+                }}
+                className="absolute top-8 md:top-10 h-24 w-24 rounded-full border-2 border-white/40"
+              />
+
+              {/* Text: Happy Birth Day Puja❤️ */}
+              <h1 className="mt-8 font-script text-4xl md:text-6xl font-bold text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.2)]">
+                Happy Birth Day Puja❤️
+              </h1>
+
+              {/* Subtext */}
+              <p className="mt-3 font-serif-romantic text-base md:text-lg text-white/80 italic">
+                Gathering our beautiful memories...
+              </p>
+
+              {/* Custom Progress Bar */}
+              <div className="mt-8 w-60 md:w-72 h-1.5 bg-white/20 rounded-full overflow-hidden shadow-inner">
+                <motion.div
+                  className="h-full bg-white rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.2 }}
+                />
+              </div>
+              <span className="mt-2 text-xs font-mono text-white/60 tabular-nums">
+                {progress}%
+              </span>
+
+              {/* Skip Button */}
+              <AnimatePresence>
+                {showSkip && (
+                  <motion.button
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    onClick={() => setSkipped(true)}
+                    className="mt-8 rounded-full border border-white/30 bg-white/10 px-5 py-1.5 text-xs font-medium text-white backdrop-blur-sm transition hover:bg-white/25 hover:border-white/50"
+                  >
+                    Skip Loading
+                  </motion.button>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <SectionHeading eyebrow="Our little universe" title="Moments, framed forever" />
 
       {hasMedia && (
         <div className="mx-auto mt-8 flex max-w-6xl flex-wrap items-center justify-center gap-2 sm:gap-3">
           <button
             type="button"
-            onClick={() => setSortOrder((s) => (s === "newest" ? "oldest" : "newest"))}
-            className="glass inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium text-plum shadow-sm transition hover:scale-105 sm:text-sm"
-            aria-label="Toggle sort order"
-          >
-            {sortOrder === "newest" ? (
-              <ArrowDownWideNarrow className="h-4 w-4 text-rose" />
-            ) : (
-              <ArrowUpWideNarrow className="h-4 w-4 text-rose" />
-            )}
-            {sortOrder === "newest" ? "Newest first" : "Oldest first"}
-          </button>
-          <button
-            type="button"
             onClick={() => setShuffleOn((v) => !v)}
             aria-pressed={shuffleOn}
-            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium shadow-sm transition hover:scale-105 sm:text-sm ${
-              shuffleOn
-                ? "bg-gradient-to-r from-rose to-plum text-white"
-                : "glass text-plum"
-            }`}
+            className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium shadow-sm transition hover:scale-105 sm:text-sm ${shuffleOn
+              ? "bg-gradient-to-r from-rose to-plum text-white"
+              : "glass text-plum"
+              }`}
           >
             {shuffleOn ? (
               <>
@@ -154,7 +273,7 @@ export function GallerySection() {
               className="h-full rounded-full bg-gradient-to-r from-rose via-lavender to-plum"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
             />
           </div>
         </div>
@@ -179,61 +298,60 @@ export function GallerySection() {
           >
             <AnimatePresence>
               {media.map((item, i) => {
-            // Alternate entrance directions for a lively mobile scroll feel.
-            const variants = [
-              { x: -40, y: 30, rotate: -4 },
-              { x: 40, y: 30, rotate: 4 },
-              { x: 0, y: 60, rotate: 0 },
-              { x: -20, y: 40, rotate: 2 },
-            ];
-            const v = variants[i % variants.length];
-            return (
-            <motion.button
-              key={item.key}
-              layout
-              initial={{ opacity: 0, x: v.x, y: v.y, rotate: v.rotate, scale: 0.85, filter: "blur(8px)" }}
-              whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0, scale: 1, filter: "blur(0px)" }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{
-                duration: 0.8,
-                delay: (i % 6) * 0.08,
-                ease: [0.16, 1, 0.3, 1],
-                layout: { duration: 0.9, ease: [0.22, 1, 0.36, 1] },
-              }}
-              whileHover={{ scale: 1.04, rotate: v.rotate / 2 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => setOpenIndex(i)}
-              className="glass mb-3 block w-full overflow-hidden rounded-2xl p-1 sm:mb-4"
-            >
-              {item.type === "image" ? (
-                <img
-                  src={item.src}
-                  alt="A precious memory of us"
-                  loading="lazy"
-                  onLoad={() => setLoadedCount((c) => c + 1)}
-                  onError={() => setLoadedCount((c) => c + 1)}
-                  className="h-auto w-full rounded-xl object-cover"
-                />
-              ) : (
-                <div className="relative">
-                  <video
-                    src={item.src}
-                    muted
-                    playsInline
-                    preload="metadata"
-                    className="h-auto w-full rounded-xl object-cover"
-                  />
-                  <div className="pointer-events-none absolute inset-0 grid place-items-center">
-                    <div className="glass-strong grid h-12 w-12 place-items-center rounded-full text-rose">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <polygon points="7 5 20 12 7 19 7 5" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </motion.button>
-          );
+                // Alternate entrance directions for a lively mobile scroll feel.
+                const variants = [
+                  { x: -40, y: 30, rotate: -4 },
+                  { x: 40, y: 30, rotate: 4 },
+                  { x: 0, y: 60, rotate: 0 },
+                  { x: -20, y: 40, rotate: 2 },
+                ];
+                const v = variants[i % variants.length];
+                return (
+                  <motion.button
+                    key={item.key}
+                    layout
+                    initial={{ opacity: 0, x: v.x, y: v.y, rotate: v.rotate, scale: 0.85, filter: "blur(8px)" }}
+                    whileInView={{ opacity: 1, x: 0, y: 0, rotate: 0, scale: 1, filter: "blur(0px)" }}
+                    viewport={{ once: true, margin: "-60px" }}
+                    transition={{
+                      duration: 0.8,
+                      delay: (i % 6) * 0.08,
+                      ease: [0.16, 1, 0.3, 1],
+                      layout: { duration: 0.9, ease: [0.22, 1, 0.36, 1] },
+                    }}
+                    whileHover={{ scale: 1.04, rotate: v.rotate / 2 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setOpenIndex(i)}
+                    className="glass mb-3 block w-full overflow-hidden rounded-2xl p-1 sm:mb-4"
+                  >
+                    {item.type === "image" ? (
+                      <img
+                        src={item.src}
+                        alt="A precious memory of us"
+                        onLoad={() => setLoadedCount((c) => c + 1)}
+                        onError={() => setLoadedCount((c) => c + 1)}
+                        className="h-auto w-full rounded-xl object-cover"
+                      />
+                    ) : (
+                      <div className="relative">
+                        <video
+                          src={item.src}
+                          muted
+                          playsInline
+                          preload="metadata"
+                          className="h-auto w-full rounded-xl object-cover"
+                        />
+                        <div className="pointer-events-none absolute inset-0 grid place-items-center">
+                          <div className="glass-strong grid h-12 w-12 place-items-center rounded-full text-rose">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                              <polygon points="7 5 20 12 7 19 7 5" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </motion.button>
+                );
               })}
             </AnimatePresence>
           </motion.div>

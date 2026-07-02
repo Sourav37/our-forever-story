@@ -8,7 +8,7 @@ import { SectionHeading } from "./gallery-section";
 
 export function ReasonsSection() {
   return (
-    <section className="relative px-4 py-20 sm:px-6">
+    <section className="relative px-4 py-10 sm:px-6">
       <SectionHeading eyebrow="A few of a thousand" title="Reasons I love you" />
 
       <div className="mx-auto mt-12 w-full max-w-xs sm:max-w-sm">

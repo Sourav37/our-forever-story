@@ -38,7 +38,7 @@ export function FinaleSection() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-screen flex-col items-center justify-center px-6 py-24 text-center"
+      className="relative flex min-h-screen flex-col items-center justify-center px-6 py-10 text-center"
     >
       <motion.div
         initial={{ opacity: 0, y: 30 }}
