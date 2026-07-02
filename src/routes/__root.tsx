@@ -78,12 +78,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Happy Birthday, My Love ❤️" },
-      { name: "description", content: "A little digital scrapbook of our memories — for the most precious person in my life. Happy Birthday, Puja." },
+      { name: "description", content: "A little digital scrapbook of our memories — for the most precious person in my life. Happy Birthday, Puja❤️." },
       { name: "author", content: "Sourav" },
       { property: "og:title", content: "Happy Birthday, My Love ❤️" },
-      { property: "og:description", content: "A little digital scrapbook of our memories, made with love." },
+      { property: "og:description", content: "A little digital scrapbook of our memories — for the most precious person in my life. Happy Birthday, Puja❤️." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Happy Birthday, My Love ❤️" },
+      { name: "twitter:description", content: "A little digital scrapbook of our memories — for the most precious person in my life. Happy Birthday, Puja❤️." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/KDYGsn987nPClw7lKeHqN5LxjLj1/social-images/social-1782980897294-DSC00106.webp" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/KDYGsn987nPClw7lKeHqN5LxjLj1/social-images/social-1782980897294-DSC00106.webp" },
     ],
     links: [
       {
